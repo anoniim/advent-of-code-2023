@@ -27,9 +27,10 @@ abstract class Day(private val dayNumber: Int) {
     fun run(expectedTestResultPart1: Int, expectedTestResultPart2: Int) {
         // test if implementation meets criteria from the description, like:
         val dayString = getDayString(dayNumber)
-        val testInput = readInput("Day${dayString}_test")
-        checkTest(part1(testInput), expectedTestResultPart1)
-        checkTest(part2(testInput), expectedTestResultPart2)
+        val testInput1 = readInput("Day${dayString}_test")
+        val testInput2 = try { readInput("Day${dayString}_test2") } catch(e: Exception) { testInput1 }
+        checkTest(part1(testInput1), expectedTestResultPart1)
+        checkTest(part2(testInput2), expectedTestResultPart2)
 
         val input = readInput("Day$dayString")
         println("=== DAY $dayNumber ===")
