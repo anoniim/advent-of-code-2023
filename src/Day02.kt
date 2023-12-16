@@ -1,7 +1,7 @@
 fun main() {
     Day2().run(
         8,
-        -1
+        2286
     )
 }
 
@@ -28,8 +28,12 @@ private class Day2 : Day(2) {
     }
 
     override fun part2(input: List<String>): Int {
-        //
-        return -1
+        // For each game, find the minimum set of cubes that must have been present. What is the sum of the power of these sets?
+        var sum = 0
+        input.map(Game::fromInput).forEach { game ->
+            sum += game.getMinimumSet().power
+        }
+        return sum
     }
 }
 
@@ -37,6 +41,18 @@ private class Game (
     val id: Int,
     val sets: List<CubeSet>
 ) {
+    fun getMinimumSet(): CubeSet {
+        var minRed = 0
+        var minGreen = 0
+        var minBlue = 0
+        sets.forEach {
+            if (it.red > minRed) minRed = it.red
+            if (it.green > minGreen) minGreen = it.green
+            if (it.blue > minBlue) minBlue = it.blue
+        }
+        return CubeSet(minRed, minGreen, minBlue)
+    }
+
     companion object {
         fun fromInput(input: String) : Game {
             val gameSplit = input.split(":")
@@ -61,4 +77,6 @@ private data class CubeSet(
     val red: Int = 0,
     val green: Int = 0,
     val blue: Int = 0,
-)
+) {
+    val power = red * green * blue
+}
