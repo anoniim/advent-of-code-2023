@@ -1,16 +1,24 @@
+/**
+ * Custom util Gradle task to create test and input files as well as a Kotlin solution file for every day of Advent of Code.
+ *
+ * Usage: ./gradlew new -PDay=X
+ *        [where X is the day number]
+ */
 val createNewDay = task<DefaultTask>("new") {
     description = "Task to prepare files for new day exercise"
 
-    if (project.hasProperty("day")) {
-        val dayNumber = (project.property("day") as String).toInt()
-        val dayString = getDayString(dayNumber)
+    doLast {
+        if (project.hasProperty("day")) {
+            val dayNumber = (project.property("day") as String).toInt()
+            val dayString = getDayString(dayNumber)
 
-        createInputFiles(dayString)
-        createSourceFileFromTemplate(dayNumber, dayString)
+            createInputFiles(dayString)
+            createSourceFileFromTemplate(dayNumber, dayString)
 
-        println("Files for day $dayNumber created")
-    } else {
-        println("Property 'day' not provided, run the task with '-Pday='")
+            println("Files for day $dayNumber created")
+        } else {
+            println("Property 'day' not provided, run the task with '-Pday='")
+        }
     }
 }
 

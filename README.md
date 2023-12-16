@@ -23,3 +23,12 @@ If you're stuck with Kotlin-specific questions or anything related to this templ
 [kotlin]: https://kotlinlang.org
 [slack]: https://surveys.jetbrains.com/s3/kotlin-slack-sign-up
 [template]: https://github.com/kotlin-hands-on/advent-of-code-kotlin-template
+
+# Gradle task to create files for every day
+
+There is a custom util Gradle task to create test and input files as well as a Kotlin solution file for every day of Advent of Code.
+
+```
+./gradlew new -PDay=X
+```
+where X is the day number (without leading 0)
