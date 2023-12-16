@@ -25,11 +25,14 @@ abstract class Day(private val dayNumber: Int) {
     abstract fun part2(input: List<String>): Int
 
     fun run(expectedTestResultPart1: Int, expectedTestResultPart2: Int) {
+        println("=== DAY $dayNumber (test) ===")
         // test if implementation meets criteria from the description, like:
         val dayString = getDayString(dayNumber)
         val testInput1 = readInput("Day${dayString}_test")
         val testInput2 = try { readInput("Day${dayString}_test2") } catch(e: Exception) { testInput1 }
+        print("Test 1 ")
         checkTest(part1(testInput1), expectedTestResultPart1)
+        print("Test 2 ")
         checkTest(part2(testInput2), expectedTestResultPart2)
 
         val input = readInput("Day$dayString")
@@ -39,7 +42,8 @@ abstract class Day(private val dayNumber: Int) {
     }
 
     private fun checkTest(result: Int, expected: Int) {
-        check(result == expected) { "Test check failed, wrong result: $result" }
+        check(result == expected) { "! Test check failed, wrong result: $result" }
+        println("passed, value $result is correct")
     }
 }
 
