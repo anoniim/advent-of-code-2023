@@ -1,7 +1,7 @@
 fun main() {
     Day5().run(
         35,
-        -1
+        46
     )
 }
 
@@ -9,12 +9,12 @@ private class Day5 : Day(5) {
 
     override fun part1(input: List<String>): Int {
         // What is the lowest location number that corresponds to any of the initial seed numbers?
-        return Almanac.fromInput(input).getLowestLocation().toInt()
+        return Almanac.fromInputPart1(input).getLowestLocation().toInt()
     }
 
     override fun part2(input: List<String>): Int {
-        //
-        return -1
+        // What is the lowest location number that corresponds to any of the initial seed numbers?
+        return Almanac.fromInputPart2(input).getLowestLocation().toInt()
     }
 }
 
@@ -44,7 +44,10 @@ private class Almanac(
         var minLocation = Long.MAX_VALUE
         seeds.forEach {
             val location = it.getLocation()
-            if (location < minLocation) minLocation = location
+            if (location < minLocation) {
+                println("New lowest location found: $location")
+                minLocation = location
+            }
         }
         return minLocation
     }
@@ -60,12 +63,40 @@ private class Almanac(
     }
 
     companion object {
-        fun fromInput(input: List<String>): Almanac {
-            val fullInput = input.joinToString(separator = "\n")
-            val numberRegex = Regex("""\d+""")
+
+        private val numberRegex = Regex("""\d+""")
+
+        private fun getFullInput(input: List<String>) = input.joinToString(separator = "\n")
+
+        fun fromInputPart1(input: List<String>): Almanac {
+            val fullInput = getFullInput(input)
             val seeds =
-                numberRegex.findAll(fullInput.split("seeds:")[1].split("\n")[0]).toList().map(MatchResult::value)
+                numberRegex.findAll(fullInput.split("seeds:")[1].split("\n")[0]).toList()
+                    .map(MatchResult::value)
                     .map(String::toLong)
+            return createAlmanac(fullInput, seeds)
+        }
+
+        fun fromInputPart2(input: List<String>): Almanac {
+            val fullInput = getFullInput(input)
+            val seeds = numberRegex.findAll(fullInput.split("seeds:")[1].split("\n")[0])
+                .map(MatchResult::value)
+                .map(String::toLong)
+                .chunked(2)
+                .map(::pairToList)
+                .flatten()
+                .toList()
+            println("Seeds parsed")
+            return createAlmanac(fullInput, seeds)
+        }
+
+        private fun pairToList(rangeList: List<Long>): List<Long> {
+            return List(rangeList[1].toInt()) {
+                rangeList[0] + it
+            }
+        }
+
+        private fun createAlmanac(fullInput: String, seeds: List<Long>): Almanac {
             val seedToSoilMapping =
                 numberRegex.findAll(fullInput.split("seed-to-soil map:")[1].split("\n\n")[0]).toList()
                     .map(MatchResult::value).map(String::toLong).chunked(3).map(::Mapping)
@@ -87,6 +118,7 @@ private class Almanac(
             val humidityToLocationMapping =
                 numberRegex.findAll(fullInput.split("humidity-to-location map:")[1].split("\n\n")[0]).toList()
                     .map(MatchResult::value).map(String::toLong).chunked(3).map(::Mapping)
+            println("Mappings created")
             return Almanac(
                 seeds,
                 seedToSoilMapping,
