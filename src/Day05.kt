@@ -18,7 +18,7 @@ private class Day5 : Day(5) {
     }
 }
 
-private open class Almanac(
+private open class Almanac private constructor(
     val seedToSoilMapping: List<Mapping>,
     val soilToFertilizerMapping: List<Mapping>,
     val fertilizerToWaterMapping: List<Mapping>,
@@ -40,8 +40,8 @@ private open class Almanac(
 
     private operator fun List<Mapping>.get(source: Long): Long {
         val specialMapping = find { mapping ->
-            val range = LongRange(mapping.sourceRangeStart, mapping.sourceRangeStart + mapping.rangeLength - 1)
-            range.contains(source)
+            // Is source within rage of mapping?
+            source >= mapping.sourceRangeStart && source < mapping.sourceRangeStart + mapping.rangeLength
         }
         return if (specialMapping != null) {
             val delta = specialMapping.destinationRangeStart - specialMapping.sourceRangeStart
@@ -65,17 +65,7 @@ private class ListAlmanac(
     fullInput: String
 ) : Almanac(fullInput) {
 
-    fun getLowestLocation(): Long {
-        var minLocation = Long.MAX_VALUE
-        seeds.forEach {
-            val location = getLocationForSeed(it)
-            if (location < minLocation) {
-                println("New lowest location found: $location")
-                minLocation = location
-            }
-        }
-        return minLocation
-    }
+    fun getLowestLocation() = seeds.minOf(::getLocationForSeed)
 
     companion object {
         fun fromInput(input: List<String>): ListAlmanac {
@@ -86,7 +76,6 @@ private class ListAlmanac(
                     .map(String::toLong)
             return ListAlmanac(seeds, fullInput)
         }
-
     }
 }
 
@@ -95,9 +84,7 @@ private class SequenceAlmanac(
     fullInput: String,
 ) : Almanac(fullInput) {
 
-    fun getLowestLocation(): Long {
-        return seedSequences.minOf { sequence -> sequence.minOf(::getLocationForSeed) }
-    }
+    fun getLowestLocation() = seedSequences.minOf { sequence -> sequence.minOf(::getLocationForSeed) }
 
     companion object {
         fun fromInput(input: List<String>): SequenceAlmanac {
@@ -114,7 +101,6 @@ private class SequenceAlmanac(
         private fun pairToSequence(rangeList: List<Long>): Sequence<Long> {
             return Sequence { RangeIterator(rangeList[0], rangeList[1]) }
         }
-
     }
 }
 
