@@ -40,7 +40,7 @@ private open class Almanac(
 
     private operator fun List<Mapping>.get(source: Long): Long {
         val specialMapping = find { mapping ->
-            val range = LongRange(mapping.sourceRangeStart, mapping.sourceRangeStart + mapping.rangeLength)
+            val range = LongRange(mapping.sourceRangeStart, mapping.sourceRangeStart + mapping.rangeLength - 1)
             range.contains(source)
         }
         return if (specialMapping != null) {
