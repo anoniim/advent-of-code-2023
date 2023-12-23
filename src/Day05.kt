@@ -28,6 +28,16 @@ private open class Almanac(
     val humidityToLocationMapping: List<Mapping>,
 ) {
 
+    constructor(fullInput: String) : this(
+        createMapping(fullInput, "seed-to-soil map:"),
+        createMapping(fullInput, "soil-to-fertilizer map:"),
+        createMapping(fullInput, "fertilizer-to-water map:"),
+        createMapping(fullInput, "water-to-light map:"),
+        createMapping(fullInput, "light-to-temperature map:"),
+        createMapping(fullInput, "temperature-to-humidity map:"),
+        createMapping(fullInput, "humidity-to-location map:")
+    )
+
     private operator fun List<Mapping>.get(source: Long): Long {
         val specialMapping = find { mapping ->
             val range = LongRange(mapping.sourceRangeStart, mapping.sourceRangeStart + mapping.rangeLength)
@@ -52,22 +62,8 @@ private open class Almanac(
 
 private class ListAlmanac(
     val seeds: List<Long>,
-    seedToSoilMapping: List<Mapping>,
-    soilToFertilizerMapping: List<Mapping>,
-    fertilizerToWaterMapping: List<Mapping>,
-    waterToLightMapping: List<Mapping>,
-    lightToTemperatureMapping: List<Mapping>,
-    temperatureToHumidityMapping: List<Mapping>,
-    humidityToLocationMapping: List<Mapping>,
-) : Almanac(
-    seedToSoilMapping,
-    soilToFertilizerMapping,
-    fertilizerToWaterMapping,
-    waterToLightMapping,
-    lightToTemperatureMapping,
-    temperatureToHumidityMapping,
-    humidityToLocationMapping
-) {
+    fullInput: String
+) : Almanac(fullInput) {
 
     fun getLowestLocation(): Long {
         var minLocation = Long.MAX_VALUE
@@ -88,53 +84,19 @@ private class ListAlmanac(
                 numberRegex.findAll(fullInput.split("seeds:")[1].split("\n")[0]).toList()
                     .map(MatchResult::value)
                     .map(String::toLong)
-            return createAlmanac(fullInput, seeds)
+            return ListAlmanac(seeds, fullInput)
         }
 
-        private fun createAlmanac(fullInput: String, seeds: List<Long>): ListAlmanac {
-            return ListAlmanac(
-                seeds,
-                createMapping(fullInput, "seed-to-soil map:"),
-                createMapping(fullInput, "soil-to-fertilizer map:"),
-                createMapping(fullInput, "fertilizer-to-water map:"),
-                createMapping(fullInput, "water-to-light map:"),
-                createMapping(fullInput, "light-to-temperature map:"),
-                createMapping(fullInput, "temperature-to-humidity map:"),
-                createMapping(fullInput, "humidity-to-location map:")
-            )
-        }
     }
 }
 
 private class SequenceAlmanac(
-    val seeds: List<Sequence<Long>>,
-    seedToSoilMapping: List<Mapping>,
-    soilToFertilizerMapping: List<Mapping>,
-    fertilizerToWaterMapping: List<Mapping>,
-    waterToLightMapping: List<Mapping>,
-    lightToTemperatureMapping: List<Mapping>,
-    temperatureToHumidityMapping: List<Mapping>,
-    humidityToLocationMapping: List<Mapping>,
-) : Almanac(
-    seedToSoilMapping,
-    soilToFertilizerMapping,
-    fertilizerToWaterMapping,
-    waterToLightMapping,
-    lightToTemperatureMapping,
-    temperatureToHumidityMapping,
-    humidityToLocationMapping
-) {
+    val seedSequences: List<Sequence<Long>>,
+    fullInput: String,
+) : Almanac(fullInput) {
 
     fun getLowestLocation(): Long {
-        var minLocation = Long.MAX_VALUE
-        seeds.forEach { sequence ->
-            val location = sequence.minOf(::getLocationForSeed)
-            if (location < minLocation) {
-                println("New lowest location found: $location")
-                minLocation = location
-            }
-        }
-        return minLocation
+        return seedSequences.minOf { sequence -> sequence.minOf(::getLocationForSeed) }
     }
 
     companion object {
@@ -146,25 +108,13 @@ private class SequenceAlmanac(
                 .chunked(2)
                 .map(::pairToSequence)
                 .toList()
-            return createAlmanac(fullInput, seeds)
+            return SequenceAlmanac(seeds, fullInput)
         }
 
         private fun pairToSequence(rangeList: List<Long>): Sequence<Long> {
             return Sequence { RangeIterator(rangeList[0], rangeList[1]) }
         }
 
-        private fun createAlmanac(fullInput: String, seeds: List<Sequence<Long>>): SequenceAlmanac {
-            return SequenceAlmanac(
-                seeds,
-                createMapping(fullInput, "seed-to-soil map:"),
-                createMapping(fullInput, "soil-to-fertilizer map:"),
-                createMapping(fullInput, "fertilizer-to-water map:"),
-                createMapping(fullInput, "water-to-light map:"),
-                createMapping(fullInput, "light-to-temperature map:"),
-                createMapping(fullInput, "temperature-to-humidity map:"),
-                createMapping(fullInput, "humidity-to-location map:")
-            )
-        }
     }
 }
 
@@ -174,7 +124,6 @@ private class Mapping(
     val rangeLength: Long,
 ) {
     constructor (input: List<Long>) : this(input[0], input[1], input[2])
-
 }
 
 private val numberRegex = Regex("""\d+""")
