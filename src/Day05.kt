@@ -92,23 +92,15 @@ private class ListAlmanac(
         }
 
         private fun createAlmanac(fullInput: String, seeds: List<Long>): ListAlmanac {
-            val seedToSoilMapping = createMapping(fullInput, "seed-to-soil map:")
-            val soilToFertilizerMapping = createMapping(fullInput, "soil-to-fertilizer map:")
-            val fertilizerToWaterMapping = createMapping(fullInput, "fertilizer-to-water map:")
-            val waterToLightMapping = createMapping(fullInput, "water-to-light map:")
-            val lightToTemperatureMapping = createMapping(fullInput, "light-to-temperature map:")
-            val temperatureToHumidityMapping = createMapping(fullInput, "temperature-to-humidity map:")
-            val humidityToLocationMapping = createMapping(fullInput, "humidity-to-location map:")
-            println("Mappings created")
             return ListAlmanac(
                 seeds,
-                seedToSoilMapping,
-                soilToFertilizerMapping,
-                fertilizerToWaterMapping,
-                waterToLightMapping,
-                lightToTemperatureMapping,
-                temperatureToHumidityMapping,
-                humidityToLocationMapping
+                createMapping(fullInput, "seed-to-soil map:"),
+                createMapping(fullInput, "soil-to-fertilizer map:"),
+                createMapping(fullInput, "fertilizer-to-water map:"),
+                createMapping(fullInput, "water-to-light map:"),
+                createMapping(fullInput, "light-to-temperature map:"),
+                createMapping(fullInput, "temperature-to-humidity map:"),
+                createMapping(fullInput, "humidity-to-location map:")
             )
         }
     }
@@ -146,7 +138,6 @@ private class SequenceAlmanac(
     }
 
     companion object {
-
         fun fromInput(input: List<String>): SequenceAlmanac {
             val fullInput = getFullInput(input)
             val seeds = numberRegex.findAll(fullInput.split("seeds:")[1].split("\n")[0])
@@ -155,7 +146,6 @@ private class SequenceAlmanac(
                 .chunked(2)
                 .map(::pairToSequence)
                 .toList()
-            println("Seeds parsed")
             return createAlmanac(fullInput, seeds)
         }
 
@@ -164,26 +154,17 @@ private class SequenceAlmanac(
         }
 
         private fun createAlmanac(fullInput: String, seeds: List<Sequence<Long>>): SequenceAlmanac {
-            val seedToSoilMapping = createMapping(fullInput, "seed-to-soil map:")
-            val soilToFertilizerMapping = createMapping(fullInput, "soil-to-fertilizer map:")
-            val fertilizerToWaterMapping = createMapping(fullInput, "fertilizer-to-water map:")
-            val waterToLightMapping = createMapping(fullInput, "water-to-light map:")
-            val lightToTemperatureMapping = createMapping(fullInput, "light-to-temperature map:")
-            val temperatureToHumidityMapping = createMapping(fullInput, "temperature-to-humidity map:")
-            val humidityToLocationMapping = createMapping(fullInput, "humidity-to-location map:")
-            println("Mappings created")
             return SequenceAlmanac(
                 seeds,
-                seedToSoilMapping,
-                soilToFertilizerMapping,
-                fertilizerToWaterMapping,
-                waterToLightMapping,
-                lightToTemperatureMapping,
-                temperatureToHumidityMapping,
-                humidityToLocationMapping
+                createMapping(fullInput, "seed-to-soil map:"),
+                createMapping(fullInput, "soil-to-fertilizer map:"),
+                createMapping(fullInput, "fertilizer-to-water map:"),
+                createMapping(fullInput, "water-to-light map:"),
+                createMapping(fullInput, "light-to-temperature map:"),
+                createMapping(fullInput, "temperature-to-humidity map:"),
+                createMapping(fullInput, "humidity-to-location map:")
             )
         }
-
     }
 }
 
@@ -199,7 +180,6 @@ private class Mapping(
 private val numberRegex = Regex("""\d+""")
 
 private fun getFullInput(input: List<String>) = input.joinToString(separator = "\n")
-
 
 private fun createMapping(fullInput: String, mappingId: String) = numberRegex.findAll(fullInput.split(mappingId)[1].split("\n\n")[0])
     .toList()
