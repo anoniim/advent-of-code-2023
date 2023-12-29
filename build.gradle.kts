@@ -12,10 +12,8 @@ val createNewDay = task<DefaultTask>("new") {
             val dayNumber = (project.property("day") as String).toInt()
             val dayString = getDayString(dayNumber)
 
-            createInputFiles(dayString)
-            createSourceFileFromTemplate(dayNumber, dayString)
-
-            println("Files for day $dayNumber created")
+            createInputFiles(dayNumber.toString(), dayString)
+            createSourceFileFromTemplate(dayNumber.toString(), dayString)
         } else {
             println("Property 'day' not provided, run the task with '-Pday='")
         }
@@ -30,13 +28,26 @@ fun getDayString(dayNumber: Int): String {
     }
 }
 
-fun createInputFiles(dayString: String) {
-    File("${project.rootDir}/src/Day$dayString.txt").writeText("")
-    File("${project.rootDir}/src/Day${dayString}_test.txt").writeText("")
+fun createInputFiles(dayNumber: String, dayString: String) {
+    val inputFile = File("${project.rootDir}/src/Day$dayString.txt")
+    writeToFileIfNotExists(inputFile, "Input file", dayNumber, "")
+
+    val testInputFile = File("${project.rootDir}/src/Day${dayString}_test.txt")
+    writeToFileIfNotExists(testInputFile, "Test input file", dayNumber, "")
 }
 
-fun createSourceFileFromTemplate(dayNumber: Int, dayString: String) {
+fun createSourceFileFromTemplate(dayNumber: String, dayString: String) {
     val template = File("${project.rootDir}/src/Day_template.kt").readText()
-    val updatedTemplate = template.replace("0", "$dayNumber")
-    File("${project.rootDir}/src/Day$dayString.kt").writeText(updatedTemplate)
+    val updatedTemplate = template.replace("0", dayNumber)
+    val dayFile = File("${project.rootDir}/src/Day$dayString.kt")
+    writeToFileIfNotExists(dayFile, "Code file", dayNumber, updatedTemplate)
+}
+
+fun writeToFileIfNotExists(file: File, fileName: String, dayNumber: String, content: String) {
+    if (!file.exists()) {
+        file.writeText(content)
+        println("- $fileName for day $dayNumber created")
+    } else {
+        println("- $fileName for day $dayNumber already exists")
+    }
 }
