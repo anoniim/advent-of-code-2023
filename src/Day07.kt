@@ -71,13 +71,21 @@ private class Day7 : Day(7) {
 
         private fun List<Card>.isTwoPairs(): Boolean {
             val sameAsFirst = getSameAsFirst()
-            if (sameAsFirst.size == 2) return isTheRestPair(get(0))
+            if (sameAsFirst.size == 2) return hasTheRestPair(get(0))
             val sameAsSecond = getSameAsSecond()
-            if (sameAsSecond.size == 2) return isTheRestPair(get(1))
+            if (sameAsSecond.size == 2) return hasTheRestPair(get(1))
             val sameAsThird = getSameAsThird()
-            if (sameAsThird.size == 2) return isTheRestPair(get(3))
+            if (sameAsThird.size == 2) return hasTheRestPair(get(3))
             val sameAsLast = getSameAsLast()
-            return sameAsLast.size == 2 && isTheRestPair(get(4))
+            return sameAsLast.size == 2 && hasTheRestPair(get(4))
+        }
+
+        private fun List<Card>.hasTheRestPair(card: Card): Boolean {
+            val rest = filter { it != card }
+            val sameAsFirst = rest.getSameAsFirst()
+            if (sameAsFirst.size == 2) return true
+            val sameAsSecond = rest.getSameAsSecond()
+            return sameAsSecond.size == 2
         }
 
         private fun List<Card>.isOnePair(): Boolean {
@@ -91,7 +99,7 @@ private class Day7 : Day(7) {
             return sameAsLast.size == 2
         }
 
-        private fun List<Card>.getSameAsLast() = filter { it == get(4) }
+        private fun List<Card>.getSameAsLast() = filter { it == get(4) } // TODO simplify using repeat()
 
         private fun List<Card>.getSameAsThird() = filter { it == get(2) }
 
