@@ -1,7 +1,7 @@
 fun main() {
     Day8().run(
         2,
-        -1
+        6
     )
 }
 
@@ -22,8 +22,17 @@ private class Day8 : Day(8) {
     }
 
     override fun part2(input: List<String>): Int {
-        //
-        return -1
+        // Simultaneously start on every node that ends with A. How many steps does it take before you're only on nodes that end with Z?
+        val instructions = input.getInstructions()
+        val nodes = input.getNodes()
+        var currentNodes = nodes.getStartingNodes()
+        var step = 0
+        while (currentNodes.allEndWithZ()) {
+            val next = instructions[step % instructions.size]
+            currentNodes = currentNodes.map { next(nodes.getNode(it)) }
+            step++
+        }
+        return step
     }
 
     private fun List<String>.getInstructions(): List<(Pair<String, String>) -> String> {
@@ -38,12 +47,21 @@ private class Day8 : Day(8) {
         }
     }
 
-    private fun List<Node>.getNode(nodeName: String) : Pair<String, String> {
+    private fun List<Node>.getNode(nodeName: String): Pair<String, String> {
         return find { it.name == nodeName }?.connections ?: throw Exception("Node $nodeName not found")
     }
 
     private fun List<String>.getNodes(): List<Node> {
         return takeLast(size - 2).map { Node.from(it) }
+    }
+
+    private fun List<Node>.getStartingNodes(): List<String> {
+        return filter { it.name.endsWith(char = 'A') }
+            .map(Node::name)
+    }
+
+    private fun List<String>.allEndWithZ(): Boolean {
+        return all { it.endsWith(char = 'Z') }
     }
 
     private class Node(
