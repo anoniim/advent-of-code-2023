@@ -18,7 +18,7 @@ private class Day8 : Day(8) {
             currentNode = next(nodes.getNode(currentNode))
             step++
         }
-        return step + 1
+        return step
     }
 
     override fun part2(input: List<String>): Int {
