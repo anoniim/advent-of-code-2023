@@ -70,7 +70,7 @@ private class Day8 : Day(8) {
     ) {
         companion object {
 
-            private val connectionsRegex = Regex("""\(([A-Z]{3}), ([A-Z]{3})\)""")
+            private val connectionsRegex = Regex("""\(([A-Z1-5]{3}), ([A-Z1-5]{3})\)""")
 
             fun from(input: String): Node {
                 val split = input.split(" = ")
