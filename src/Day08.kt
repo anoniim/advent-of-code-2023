@@ -14,7 +14,7 @@ private class Day8 : Day(8) {
         var currentNode = "AAA"
         var step = 0
         while (currentNode != "ZZZ") {
-            val next = instructions[step]
+            val next = instructions[step % instructions.size]
             currentNode = next(nodes.getNode(currentNode))
             step++
         }
