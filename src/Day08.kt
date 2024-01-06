@@ -57,7 +57,7 @@ private class Day8 : Day(8) {
             fun from(input: String): Node {
                 val split = input.split(" = ")
                 val connectionNames = connectionsRegex.find(split[1])!!.groupValues
-                val connections = Pair(connectionNames[0], connectionNames[1])
+                val connections = Pair(connectionNames[1], connectionNames[2])
                 return Node(split[0], connections)
             }
         }
