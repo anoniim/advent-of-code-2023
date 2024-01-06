@@ -1,7 +1,7 @@
 fun main() {
     Day7().run(
         6440,
-        -1
+        5905
     )
 }
 
@@ -16,7 +16,7 @@ private class Day7 : Day(7) {
     }
 
     override fun part2(input: List<String>): Int {
-        //
+        // Using the new joker rule, find the rank of every hand in your set. What are the new total winnings?
         return -1
     }
 
