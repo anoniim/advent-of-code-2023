@@ -26,13 +26,14 @@ private class Day8 : Day(8) {
         val instructions = input.getInstructions()
         val nodes = input.getNodes()
         var currentNodes = nodes.getStartingNodes()
-        var step = 0
-        while (currentNodes.allEndWithZ()) {
-            val next = instructions[step % instructions.size]
+        var step = 0L
+        while (!currentNodes.allEndWithZ()) {
+            val next = instructions[(step % instructions.size).toInt()]
             currentNodes = currentNodes.map { next(nodes.getNode(it)) }
             step++
         }
-        return step
+        println("Result: $step")
+        return step.toInt()
     }
 
     private fun List<String>.getInstructions(): List<(Pair<String, String>) -> String> {
