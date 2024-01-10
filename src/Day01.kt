@@ -7,26 +7,22 @@ fun main() {
 
 private class Day1 : Day(1) {
 
-    override fun part1(input: List<String>): Int {
-        // On each line, the calibration value can be found by combining the first digit and the last digit (in that order) to form a single two-digit number
-        var sum = 0
-        input.forEach {
-            val firstDigit = it.find(Char::isDigit)
-            val lastDigit = it.findLast(Char::isDigit)
-            sum += "$firstDigit$lastDigit".toInt()
-        }
-        return sum
+override fun part1(input: List<String>): Int {
+    // On each line, the calibration value can be found by combining the first digit and the last digit (in that order) to form a single two-digit number
+    return input.sumOf {
+        val firstDigit = it.first(Char::isDigit)
+        val lastDigit = it.last(Char::isDigit)
+        "$firstDigit$lastDigit".toInt()
     }
+}
 
     override fun part2(input: List<String>): Int {
         // It looks like some of the digits are actually spelled out with letters: one, two, three, four, five, six, seven, eight, and nine also count as valid "digits"
-        var sum = 0
-        input.forEach {
+        return input.sumOf {
             val firstDigit = it.getFirstDigit()
             val lastDigit = it.getLastDigit()
-            sum += "$firstDigit$lastDigit".toInt()
+            "$firstDigit$lastDigit".toInt()
         }
-        return sum
     }
 
     private fun String.getFirstDigit(): Int {
