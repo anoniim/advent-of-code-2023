@@ -1,5 +1,3 @@
-import jdk.internal.org.jline.reader.History
-
 fun main() {
     Day9().run(
         114,
@@ -24,21 +22,26 @@ private class Day9 : Day(9) {
 
         fun getPrediction(): Int {
             val steps = calculateSteps()
-
+            var lastPrediction = 0
+            return steps.map { step ->
+                lastPrediction += step
+                lastPrediction
+            }
+                .last() + values.last()
         }
 
-        private fun calculateSteps(): MutableList<Int> {
+        private fun calculateSteps(): List<Int> {
             val steps = mutableListOf<Int>()
             var nextStep = values
             do {
                 nextStep = nextStep.getNextStep()
                 steps.add(nextStep.last())
-            } while (nextStep.all { it == 0 })
+            } while (!nextStep.all { it == 0 })
             return steps
         }
 
         private fun List<Int>.getNextStep(): List<Int> {
-
+            return List(size - 1) { get(it + 1) - get(it) }
         }
 
         companion object {
