@@ -22,11 +22,7 @@ private class Day9 : Day(9) {
 
         fun getPrediction(): Int {
             val steps = calculateSteps()
-            var lastPrediction = 0
-            return steps.map { step ->
-                lastPrediction += step
-                lastPrediction
-            }
+            return steps.scan(0) { prev, curr -> prev + curr }
                 .last() + values.last()
         }
 
